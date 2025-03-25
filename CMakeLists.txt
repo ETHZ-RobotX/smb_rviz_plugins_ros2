@@ -59,13 +59,14 @@ ament_target_dependencies(smb_battery_mot_panel
 #   rclcpp::rclcpp
 # )
 
-# install(
-#   TARGETS smb_battery_mot_panel
-#   EXPORT export_${PROJECT_NAME}
-#   ARCHIVE DESTINATION lib
-#   LIBRARY DESTINATION lib
-#   RUNTIME DESTINATION bin
-# )
+# Uncomment this install block
+install(
+  TARGETS smb_battery_mot_panel
+  EXPORT export_${PROJECT_NAME}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
 
 install(DIRECTORY include/
         DESTINATION include

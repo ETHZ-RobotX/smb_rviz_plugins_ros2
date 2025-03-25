@@ -13,9 +13,6 @@ namespace smb_rviz_plugins_ros2 {
 
 SmbBatteryMotPanel::SmbBatteryMotPanel(QWidget *parent) : Panel(parent) 
 {
-    // Initialize ROS2 components
-    node_ = std::make_shared<rclcpp::Node>("smb_battery_panel");
-    
     QVBoxLayout* layout = new QVBoxLayout;
     battery_name_= new QLabel("Motor Battery");
     battery_name_->setStyleSheet("font-weight: bold");
@@ -44,17 +41,61 @@ SmbBatteryMotPanel::~SmbBatteryMotPanel()
     }
 }
 
+// void SmbBatteryMotPanel::onInitialize()
+// {
+//     // Get the ROS node from RViz context instead of creating our own
+//     auto node_abstract = getDisplayContext()->getRosNodeAbstraction().lock();
+//     node_ = node_abstract->get_raw_node();
+    
+//     // Create the topic property - without directly attaching the slot
+//     battery_topic_property_ = new rviz_common::properties::StringProperty(
+//         "Topic", "/battery_status",
+//         "sensor_msgs/BatteryState topic to subscribe to",
+//         this);
+    
+//     // Connect the property's changed signal to our slot using Qt5 style
+//     connect(battery_topic_property_, &rviz_common::properties::Property::changed,
+//             this, &SmbBatteryMotPanel::updateTopic);
+    
+//     // Subscribe to the topic
+//     updateTopic();
+    
+//     // Add debugging
+//     RCLCPP_INFO(node_->get_logger(), "Battery panel initialized and subscribed to: %s", 
+//                 battery_topic_property_->getStdString().c_str());
+// }
+
 void SmbBatteryMotPanel::onInitialize()
 {
+    // Get the ROS node from RViz context instead of creating our own
+    auto node_abstraction = getDisplayContext()->getRosNodeAbstraction().lock();
+    if (!node_abstraction) {
+        RCLCPP_ERROR(rclcpp::get_logger("SmbBatteryMotPanel"), "Failed to get ROS node abstraction");
+        return;
+    }
+    node_ = node_abstraction->get_raw_node();
+    
+    // Create the topic property (ensure spelling is correct)
     battery_topic_property_ = new rviz_common::properties::StringProperty(
         "Topic", "/battery_status",
         "sensor_msgs/BatteryState topic to subscribe to",
-        nullptr,  // No parent property since Panel isn't a Property
-        SLOT(updateTopic()));
+        nullptr);  // or 0 instead of 'this'
+
+    // Connect the property's changed signal to our updateTopic slot using new Qt5 syntax
+    connect(battery_topic_property_, &rviz_common::properties::Property::changed,
+            this, &SmbBatteryMotPanel::updateTopic);
     
-    subscribe();
+    // Subscribe/update the topic subscription
+    updateTopic();
+    
+    // Log for debugging
+    RCLCPP_INFO(node_->get_logger(), "Battery panel initialized and subscribed to: %s", 
+                battery_topic_property_->getStdString().c_str());
 }
 
+
+// Interesting feature, this allows to change the topic of the panel at runtime, nice! 
+// /battery_status is just a placeholder, it can be changed to any topic that publishes a sensor_msgs/BatteryState message
 void SmbBatteryMotPanel::updateTopic()
 {
     unsubscribe();
@@ -63,13 +104,26 @@ void SmbBatteryMotPanel::updateTopic()
 
 void SmbBatteryMotPanel::subscribe()
 {
+    if (!battery_topic_property_ || !node_) {
+        RCLCPP_ERROR(rclcpp::get_logger("smb_battery_panel"), 
+                    "Failed to subscribe: %s", 
+                    !battery_topic_property_ ? "No topic property" : "No node");
+        return;
+    }
+    
+    const std::string topic = battery_topic_property_->getStdString();
+    if (topic.empty()) {
+        RCLCPP_ERROR(node_->get_logger(), "Empty topic name");
+        return;
+    }
+    
     try {
         battery_sub_ = node_->create_subscription<sensor_msgs::msg::BatteryState>(
-            battery_topic_property_->getStdString(),
-            10,
+            topic, 10, 
             std::bind(&SmbBatteryMotPanel::batteryMsgCallback, this, std::placeholders::_1));
-    } catch (const rclcpp::exceptions::InvalidTopicNameError& e) {
-        RCLCPP_ERROR_STREAM(node_->get_logger(), "Invalid topic name: " << e.what());
+        RCLCPP_INFO(node_->get_logger(), "Subscribed to: %s", topic.c_str());
+    } catch (const std::exception& e) {
+        RCLCPP_ERROR(node_->get_logger(), "Error subscribing to topic: %s", e.what());
     }
 }
 
