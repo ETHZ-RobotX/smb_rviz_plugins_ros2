@@ -36,9 +36,15 @@ qt5_wrap_cpp(MOC_FILES
   include/smb_rviz_plugins_ros2/smb_power_motor/smb_batt_mot_panel.hpp
 )
 
+# Add Qt resource compilation
+qt5_add_resources(QRC_FILES
+  resources/battery_icons.qrc
+)
+
 add_library(smb_battery_mot_panel SHARED
   src/smb_power_motor/smb_batt_mot_panel.cpp
   ${MOC_FILES}
+  ${QRC_FILES}
 )
 
 target_include_directories(smb_battery_mot_panel PUBLIC
@@ -59,7 +65,7 @@ ament_target_dependencies(smb_battery_mot_panel
 #   rclcpp::rclcpp
 # )
 
-# Uncomment this install block
+# wtf I don't understand why we need this lol, but it wont build without it
 install(
   TARGETS smb_battery_mot_panel
   EXPORT export_${PROJECT_NAME}
@@ -96,6 +102,12 @@ target_include_directories(fake_battery_publisher PRIVATE
 
 install(TARGETS fake_battery_publisher
   DESTINATION lib/${PROJECT_NAME}
+)
+
+# Add these after the other install commands
+install(
+  DIRECTORY resources/
+  DESTINATION share/${PROJECT_NAME}/resources
 )
 
 ament_package()

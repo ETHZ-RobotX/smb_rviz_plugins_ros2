@@ -1,0 +1,18 @@
+<!DOCTYPE RCC>
+<RCC>
+  <qresource prefix="/battery">
+    <file>icons/battery_0.svg</file>
+    <file>icons/battery_1.svg</file>
+    <file>icons/battery_2.svg</file>
+    <file>icons/battery_3.svg</file>
+    <file>icons/battery_4.svg</file>
+    <file>icons/battery_5.svg</file>
+    <file>icons/battery_6.svg</file>
+    <file>icons/battery_7.svg</file>
+    <file>icons/battery_8.svg</file>
+    <file>icons/battery_9.svg</file>
+    <file>icons/battery_full.svg</file>
+    <file>icons/battery_charge.svg</file>
+    <file>icons/battery_warning.svg</file>
+  </qresource>
+</RCC> 
