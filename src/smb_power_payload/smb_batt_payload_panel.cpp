@@ -1,4 +1,4 @@
-#include "smb_rviz_plugins_ros2/smb_power_payload/smb_batt_payload_panel.hpp"
+#include "smb_rviz_plugins/smb_power_payload/smb_batt_payload_panel.hpp"
 
 #include <QGridLayout>
 #include <QLabel>
@@ -9,7 +9,7 @@
 
 #include "rviz_common/display_context.hpp"
 
-namespace smb_rviz_plugins_ros2 {
+namespace smb_rviz_plugins {
 
 SmbBatteryPayloadPanel::SmbBatteryPayloadPanel(QWidget* parent)
 : rviz_common::Panel(parent),
@@ -147,7 +147,7 @@ void SmbBatteryPayloadPanel::updateBatteryDisplay()
   }
 }
 
-} // namespace smb_rviz_plugins_ros2
+} // namespace smb_rviz_plugins
 
 #include <pluginlib/class_list_macros.hpp>
-PLUGINLIB_EXPORT_CLASS(smb_rviz_plugins_ros2::SmbBatteryPayloadPanel, rviz_common::Panel)
+PLUGINLIB_EXPORT_CLASS(smb_rviz_plugins::SmbBatteryPayloadPanel, rviz_common::Panel)

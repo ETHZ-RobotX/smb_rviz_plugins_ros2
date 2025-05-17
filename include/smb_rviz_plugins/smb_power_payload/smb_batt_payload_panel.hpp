@@ -14,7 +14,7 @@ class QLineEdit;
 class QProgressBar;
 class QTimer;
 
-namespace smb_rviz_plugins_ros2
+namespace smb_rviz_plugins
 {
 
 class SmbBatteryPayloadPanel : public rviz_common::Panel
@@ -72,4 +72,4 @@ private:
   double percentage_;
 };
 
-}  // namespace smb_rviz_plugins_ros2
+}  // namespace smb_rviz_plugins

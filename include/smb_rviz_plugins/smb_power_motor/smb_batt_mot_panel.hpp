@@ -10,7 +10,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/battery_state.hpp>
 
-namespace smb_rviz_plugins_ros2
+namespace smb_rviz_plugins
 {
 class SmbBatteryMotPanel : public rviz_common::Panel
 {
@@ -58,5 +58,5 @@ class SmbBatteryMotPanel : public rviz_common::Panel
         rviz_common::properties::StringProperty* battery_topic_property_{nullptr};
     };
 
-} // namespace smb_rviz_plugins_ros2
+} // namespace smb_rviz_plugins
 #endif //MB_BATT_MOT_PANEL_HPP 
