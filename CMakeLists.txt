@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(smb_rviz_plugins_ros2)
+project(smb_rviz_plugins)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -33,8 +33,8 @@ endif()
 # Add these lines before building your library
 set(CMAKE_AUTOMOC ON)
 qt5_wrap_cpp(MOC_FILES
-  include/smb_rviz_plugins_ros2/smb_power_motor/smb_batt_mot_panel.hpp
-  include/smb_rviz_plugins_ros2/smb_power_payload/smb_batt_payload_panel.hpp
+  include/smb_rviz_plugins/smb_power_motor/smb_batt_mot_panel.hpp
+  include/smb_rviz_plugins/smb_power_payload/smb_batt_payload_panel.hpp
 )
 
 # Add Qt resource compilation

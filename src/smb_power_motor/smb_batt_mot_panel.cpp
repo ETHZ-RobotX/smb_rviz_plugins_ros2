@@ -1,4 +1,4 @@
-#include "smb_rviz_plugins_ros2/smb_power_motor/smb_batt_mot_panel.hpp"
+#include "smb_rviz_plugins/smb_power_motor/smb_batt_mot_panel.hpp"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPainter>
@@ -11,7 +11,7 @@
 #include <ament_index_cpp/get_package_share_directory.hpp>
 #include <QDir>
 
-namespace smb_rviz_plugins_ros2 {
+namespace smb_rviz_plugins {
 
 SmbBatteryMotPanel::SmbBatteryMotPanel(QWidget *parent) : Panel(parent) 
 {
@@ -245,4 +245,4 @@ void SmbBatteryMotPanel::updateWidgets(){
 }
 
 #include <pluginlib/class_list_macros.hpp>
-PLUGINLIB_EXPORT_CLASS(smb_rviz_plugins_ros2::SmbBatteryMotPanel, rviz_common::Panel)
+PLUGINLIB_EXPORT_CLASS(smb_rviz_plugins::SmbBatteryMotPanel, rviz_common::Panel)

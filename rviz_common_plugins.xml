@@ -1,15 +1,15 @@
 <library path="smb_battery_panels">
   <class 
-    name="smb_rviz_plugins_ros2/SmbBatteryMotPanel"
-    type="smb_rviz_plugins_ros2::SmbBatteryMotPanel"
+    name="smb_rviz_plugins/SmbBatteryMotPanel"
+    type="smb_rviz_plugins::SmbBatteryMotPanel"
     base_class_type="rviz_common::Panel">
     <description>
       A panel that displays motor battery status information
     </description>
   </class>
   <class 
-    name="smb_rviz_plugins_ros2/SmbBatteryPayloadPanel"
-    type="smb_rviz_plugins_ros2::SmbBatteryPayloadPanel"
+    name="smb_rviz_plugins/SmbBatteryPayloadPanel"
+    type="smb_rviz_plugins::SmbBatteryPayloadPanel"
     base_class_type="rviz_common::Panel">
     <description>
       A panel that displays payload battery status information
