@@ -1,4 +1,4 @@
-#include "smb_rviz_plugins_ros2/smb_power_motor/smb_batt_mot_panel.hpp"
+#include "smb_rviz_plugins/smb_power_motor/smb_batt_mot_panel.hpp"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPainter>
@@ -8,8 +8,10 @@
 #include <sensor_msgs/msg/battery_state.hpp>
 #include <pluginlib/class_list_macros.hpp>
 #include <rviz_common/properties/string_property.hpp>
+#include <ament_index_cpp/get_package_share_directory.hpp>
+#include <QDir>
 
-namespace smb_rviz_plugins_ros2 {
+namespace smb_rviz_plugins {
 
 SmbBatteryMotPanel::SmbBatteryMotPanel(QWidget *parent) : Panel(parent) 
 {
@@ -172,50 +174,70 @@ void SmbBatteryMotPanel::setVoltage(double voltage){
     updateWidgets();
 }
 
-void SmbBatteryMotPanel::setIcon(const QString &path){
-    QPixmap pixmap(path);
+void SmbBatteryMotPanel::setIcon(const QString &icon_name)
+{
+    QPixmap pixmap(icon_name);
+    if (pixmap.isNull()) {
+        RCLCPP_ERROR(rclcpp::get_logger("SmbBatteryMotPanel"), 
+                     "Failed to load icon: %s", icon_name.toStdString().c_str());
+        // Try printing all available resources for debugging
+        RCLCPP_INFO(rclcpp::get_logger("SmbBatteryMotPanel"), 
+                    "Available resource paths: %s", 
+                    QDir(":/").entryList().join(", ").toStdString().c_str());
+        return;
+    }
+    
     const auto& font_metrics = battery_icon_->fontMetrics();
     auto icon_width = font_metrics.averageCharWidth() * 6;
-    auto icon_height = font_metrics.height()*2;
+    auto icon_height = font_metrics.height() * 2;
     battery_icon_->setPixmap(pixmap.scaled(icon_width, icon_height, Qt::KeepAspectRatio));
 }
 
 void SmbBatteryMotPanel::updateWidgets(){
     double percentage = percentage_ * 100;
     battery_text_->setText(QString("%1% (%2 V)").arg(QString::number(percentage, 'f', 2)).arg(QString::number(voltage_, 'f', 2)));
+    
+    // Fix the format string - use %% to print a literal % character
+    RCLCPP_INFO(rclcpp::get_logger("SmbBatteryMotPanel"), 
+                "Updating widget: status=%d, percentage=%.2f%%, voltage=%.2fV", 
+                static_cast<int>(battery_status_), percentage, voltage_);
+    
     switch(battery_status_)
     {
         case BatteryStatus::Unknown:
-            setIcon(":/battery/battery_warning.svg");
+            setIcon(":/battery/icons/battery_warning.svg");
             break;
         case BatteryStatus::Charging:
-            setIcon(":/battery/battery_charge.svg");
+            setIcon(":/battery/icons/battery_charge.svg");
             break;
         case BatteryStatus::Discharging:
         case BatteryStatus::NotCharging:
-            if(percentage_ < 0.1)
-                setIcon(":/battery/battery_0.svg");
-            else if(percentage_ < 0.2)
-                setIcon(":/battery/battery_1.svg");
-            else if(percentage_ < 0.3)
-                setIcon(":/battery/battery_2.svg");
-            else if(percentage_ < 0.4)
-                setIcon(":/battery/battery_3.svg");
-            else if(percentage_ < 0.5)
-                setIcon(":/battery/battery_4.svg");
-            else if(percentage_ < 0.6)
-                setIcon(":/battery/battery_5.svg");
-            else if(percentage_ < 0.7)
-                setIcon(":/battery/battery_6.svg");
-            else if(percentage_ < 0.8)
-                setIcon(":/battery/battery_7.svg");
-            else if(percentage_ < 0.9)
-                setIcon(":/battery/battery_8.svg");
-            else
-                setIcon(":/battery/battery_full.svg");
+            if(percentage_ < 0.1) {
+                setIcon(":/battery/icons/battery_0.svg");
+            } else if(percentage_ < 0.2) {
+                setIcon(":/battery/icons/battery_1.svg");
+            } else if(percentage_ < 0.3) {
+                setIcon(":/battery/icons/battery_2.svg");
+            } else if(percentage_ < 0.4) {
+                setIcon(":/battery/icons/battery_3.svg");
+            } else if(percentage_ < 0.5) {
+                setIcon(":/battery/icons/battery_4.svg");
+            } else if(percentage_ < 0.6) {
+                setIcon(":/battery/icons/battery_5.svg");
+            } else if(percentage_ < 0.7) {
+                setIcon(":/battery/icons/battery_6.svg");
+            } else if(percentage_ < 0.8) {
+                setIcon(":/battery/icons/battery_7.svg");
+            } else if(percentage_ < 0.9) {
+                setIcon(":/battery/icons/battery_8.svg");
+            } else if(percentage_ < 1.0) {
+                setIcon(":/battery/icons/battery_9.svg");
+            } else {
+                setIcon(":/battery/icons/battery_full.svg");
+            }
             break;
         case BatteryStatus::Missing:
-            setIcon(":/battery/battery_warning.svg");
+            setIcon(":/battery/icons/battery_warning.svg");
             break;
     }
 }
@@ -223,4 +245,4 @@ void SmbBatteryMotPanel::updateWidgets(){
 }
 
 #include <pluginlib/class_list_macros.hpp>
-PLUGINLIB_EXPORT_CLASS(smb_rviz_plugins_ros2::SmbBatteryMotPanel, rviz_common::Panel)
+PLUGINLIB_EXPORT_CLASS(smb_rviz_plugins::SmbBatteryMotPanel, rviz_common::Panel)
